@@ -806,27 +806,22 @@ PrintPDFinLocalWindow(key)
 	return
 }
 
-^!t::
+SC137::
 {
-	x := URLDownloadToVar("http://dazzling-torch-3393.firebaseio.com/SlidePrinting.json")
-	y := JsonToObject(x)
-	
-	For key, value in y
-		{
-			FileDelete, %key%.pdf
-			URLDownloadToFile, https://obscure-spire-2273.herokuapp.com/key/%key%, %key%.pdf
-			c=https://dazzling-torch-3393.firebaseio.com/SlidePrinting/%key%.json
-			URLDelete(c)
-		}
-	Sleep, 4000
-	
-	Loop N:\LNT\cassLink\*.pdf
-	{
-		RunWait, N:\LNT\lib\sumatra-pdf\SumatraPDF.exe -print-to-default  %A_LoopFileName% 
-		FileDelete, %A_LoopFileName%
-	}
 
-	return
+ie.document.getElementByID("ctl00_DefaultContent_btnLaunch2").click()
+IELoad(ie)
+WinActivate, Travel Document
+MouseClick, Right, 400, 400
+Sleep, 100
+MouseClick, Left, 440, 513
+WinWait, Print
+Sleep, 500
+Send {Enter}
+Sleep, 2000
+ie.navigate("https://path.averodx.com/orders/InboundWorklist.aspx")
+IELoad(ie)
+return
 	
 }
 
