@@ -165,10 +165,10 @@ LISQueueCPTEditsAndResave(Casenum, codestring, resave) {
 }
 
 
-LISDeletePDFReviewAction(k){
-		data={}
+LISDeletePDFReviewAction(k)
+{
 		url=https://dazzling-torch-3393.firebaseio.com/AveroQueue/%k%.json
-		j := URLDelete(url, data)
+		j := URLDelete(url)
 return
 }
 
@@ -196,7 +196,7 @@ URLDownloadToVar(url){
 	return hObject.ResponseText
 }
 
-UrlDelete(URL, data){
+UrlDelete(URL){
 	hObject:=ComObjCreate("WinHttp.WinHttpRequest.5.1")
 	hObject.Open("DELETE",url)
 	hObject.Send()

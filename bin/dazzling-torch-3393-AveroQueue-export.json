@@ -1,0 +1,15 @@
+{
+  "Settings" : {
+    "cassReceiveVersion" : "1.0",
+    "cassSendVersion" : "1.0",
+    "mmuenster" : {
+      "etelPassword" : "Password1",
+      "etelUsername" : "mmuenster"
+    },
+    "tmattison" : {
+      "etelPassword" : "trae1",
+      "etelUsername" : "tmattison"
+    },
+    "version" : 1.1
+  }
+}

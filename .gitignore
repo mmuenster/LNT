@@ -1,1 +1,6 @@
-lib/python/*
+node_modules
+lib/sumatrapdfcache
+lib/python
+lib/casperjs
+lib/phantomjs
+

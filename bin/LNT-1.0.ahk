@@ -269,6 +269,7 @@ UrovysionSignout:
 					else If Endstate=D
 					{
 						Progress, Off
+						WinClose, %FileItem2%
 						Return
 					}
 					else if DeleteState=D
@@ -488,11 +489,9 @@ F12::   ;Etel Reassign and Launch functions
 		{
 			data={"action":"reassign", "caseNumber":"%CaseNum%", "doctor":"%p%" }
 			j := URLPost(urlQueue, data)
-
-/* 			data={"action":"readCase", "caseNumber":"%CaseNum%" }
- * 			url:=urlQueue
- * 			j := URLPost(urlQueue, data)
- */
+			
+			data={"action":"readCase", "caseNumber":"%CaseNum%" }
+			j := URLPost(urlQueue, data)
 		}
 	}
 	
@@ -500,6 +499,24 @@ F12::   ;Etel Reassign and Launch functions
 
 }
 
+^!d::
+{
+	urlQueue = https://dazzling-torch-3393.firebaseio.com/CaseData.json?limitToFirst=1&orderBy="$key"
+
+j := URLDownloadToVar(urlQueue)
+
+if (j="{}")
+	Return
+
+t := JsonToObject(j)
+
+For k,v in t
+	key:=k	
+
+urlToDelete=https://dazzling-torch-3393.firebaseio.com/CaseData/%key%.json
+URLDelete(urlToDelete)
+return
+}
 
 ^!z::
 {

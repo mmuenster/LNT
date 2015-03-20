@@ -1,4 +1,4 @@
-PossibleDrives=EFGHIJKLMNOPQURSTUVWXYZ
+PossibleDrives=ZYXWVUTSRQPONMLKJIHGFE
 
 version:=URLDownloadToVar("https://dazzling-torch-3393.firebaseio.com/AveroQueue/Settings/version.json")
 StringReplace, version, version, ",,All
@@ -9,7 +9,7 @@ Loop, Parse, PossibleDrives
 		Run, %A_LoopField%:\LNT\lib\Autohotkey\Autohotkey.exe %A_LoopField%:\LNT\bin\LNT-%version%.ahk
 		break
 	}
-
+msgbox, %version%
 ExitApp
 	
 URLDownloadToVar(url){

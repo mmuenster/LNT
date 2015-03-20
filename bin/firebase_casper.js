@@ -114,7 +114,7 @@ function readUVCase(marker, fbQueueItem) {
 					casper.download("https://path.averodx.com" + j, scriptPath + "/temp/" + casper.cli.get(0) + "/" + marker.caseNumber +  ".pdf");
 					fbQueueItem.ref().remove();
 				}
-			}, function onTimeout() {}, 20000);
+			}, function onTimeout() {}, 30000);
 		});
 	return
 }
@@ -229,9 +229,9 @@ function readCase(marker, fbQueueItem) {
 
 function writeCase(marker, fbQueueItem) {
 	fb_caseData.child(marker.caseNumber).once('value', function (dataSnapshot) {	
-		casper.echo("Beginning writeCase for " + marker.caseNumber);
 			casper.thenOpen("https://path.averodx.com/Custom/Avero/Tech/Surgical/Input.aspx?CaseNo=" + marker.caseNumber, function() {
 				casper.waitForSelector("span#ctl00_DefaultContent_PatientHeader_PatientDemographicsTab_PatientSummaryTab_PatientName", function() {
+					casper.echo("Beginning writeCase for " + marker.caseNumber);
 					writeDataToEtel(dataSnapshot, fbQueueItem);
 					console.log("writeCase for " + marker.caseNumber +" completed! ");
 				}, function writeCaseTimeout() {

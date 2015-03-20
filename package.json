@@ -1,0 +1,26 @@
+{
+  "name": "LNT",
+  "version": "1.0.0",
+  "description": "Lose No Time",
+  "main": "index.js",
+  "bin": {
+    "LNT": "caspertest.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mmuenster/LNT.git"
+  },
+  "author": "Matthew Muenster",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mmuenster/LNT/issues"
+  },
+  "homepage": "https://github.com/mmuenster/LNT",
+  "dependencies": {
+    "casperjs": "^1.1.0-beta3",
+    "phantomjs": "^1.9.16"
+  }
+}
