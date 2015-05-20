@@ -623,6 +623,8 @@
 ::surfdf::On occasion, the surface of a dermatofibroma may show changes similar to those observed in a lentigo or seborrheic keratosis.
 ::surfdle::Occasionally, the surface of a lesion of discoid lupus erythematosus may resemble a lichenoid keratosis or a lichenoid actinic keratosis.  Clinicopathologic correlation is recommended.  If lupus is a consideration, a deeper biopsy may be helpful.
 ::survive1::Unfortunately, this specimen did not survive processing.
+::sv4::Professional interpretation done at Skin and Vein Center. ~~88304T~~ 
+::sv5::Professional interpretation done at Skin and Vein Center. ~~88305T~~ 
 ::svfen::Professional interpretation done at Skin and Vein Center, 305 N. Leroy St., Fenton, MI 48430. 
  ~~88305T~~
 ::svgc::Professional interpretation done at Skin and Vein Center, 32669 Warren Rd Suite 9, Garden City, MI 48135. 

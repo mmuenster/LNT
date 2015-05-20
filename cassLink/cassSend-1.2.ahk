@@ -19,7 +19,7 @@ global ie := IEGet()  ;Gets or creates the open LIS Window logged into LIS, decl
 global baseCaseLabel := ""
 global urlQueue
 
-SetTimer, KeepHerokuUp, 720000
+SetTimer, KeepHerokuUp,2000000
 Gosub, KeepHerokuUp
 return
 }
@@ -90,7 +90,9 @@ BuildStandardGUI()
 	Gui, Add, Text, x172 y70, P6 
 	Gui, Add, Text, x222 y70, L1-3
 	Gui, Add, Text, x272 y70, L1L2
-	Gui, Add, Text, x322 y70, L1L2L3 
+	Gui, Add, Text, x322 y70, L123
+	Gui, Add, Text, x372 y70, Pap
+	Gui, Add, Text, x422 y70, Fish
 	PrinterChooser()
 	
 	Loop, %jarCount%
@@ -103,7 +105,10 @@ BuildStandardGUI()
 		Gui, Add, CheckBox, x172 y%offset% h28 v%A_Index%P6
 		Gui, Add, CheckBox, x222 y%offset% h28 v%A_Index%L1to3
 		Gui, Add, CheckBox, x272 y%offset% h28 v%A_Index%L1L2 
-		Gui, Add, CheckBox, x322 y%offset% h28 v%A_Index%L1L2L3 
+		Gui, Add, CheckBox, x322 y%offset% h28 v%A_Index%L1L2L3
+		Gui, Add, CheckBox, x372 y%offset% h28 v%A_Index%Pap
+		Gui, Add, CheckBox, x422 y%offset% h28 v%A_Index%Fish
+		
 	}
 		offset := offset + 50
 		Gui, Add, Button, x20 y%offset% w60 h28 Default, Send
@@ -154,7 +159,7 @@ BuildUSGUI()
 		jarLabel := jar%A_Index%
 		jarLabelNext := jar%nextIndex%
 		
-		if ((jarLabel="A" and jarLabelNext="B") or (jarLabel="C" and jarLabelNext="D") or (jarLabel="E" and jarLabelNext="F") or (jarLabel="G" and jarLabelNext="H") or (jarLabel="I" and jarLabelNext="J") or (jarLabel="K" and jarLabelNext="L") or (jarLabel="M" and jarLabelNext="N") or (jarLabel="O" and jarLabelNext="P"))
+		if ((jarLabel="A" and jarLabelNext="B") or (jarLabel="C" and jarLabelNext="D") or (jarLabel="E" and jarLabelNext="F") or (jarLabel="G" and jarLabelNext="H") or (jarLabel="I" and jarLabelNext="J") or (jarLabel="K" and jarLabelNext="L") or (jarLabel="M" and jarLabelNext="N") or (jarLabel="O" and jarLabelNext="P") or (jarLabel="Q" and jarLabelNext="R") or (jarLabel="S" and jarLabelNext="T") or (jarLabel="U" and jarLabelNext="V") or (jarLabel="W" and jarLabelNext="X") or (jarLabel="Y" and jarLabelNext="Z"))
 		{
 			;Do a combined box and skip next iteration of the loop, Print Label Quantity 1 Split check box
 			key%A_Index% := "PLS"
@@ -356,7 +361,7 @@ F12::
 	;Msgbox, shortPrefix=%shortPrefix%
 	if (shortPrefix="US" or shortPrefix="TUS")
 		BuildUSGUI()
-	else if (shortPrefix="SP" or shortPrefix="TSP" or shortPrefix="GIS" or shortPrefix="GYS" or shortPrefix="BS")
+	else if (shortPrefix="SP" or shortPrefix="TSP" or shortPrefix="GIS" or shortPrefix="GYS" or shortPrefix="BS" or shortPrefix="UC" or shortPrefix="TUC" or shortPrefix="UV" or shortPrefix="TUV" )
 		BuildStandardGUI()
 	else
 		BuildStandardGui()
@@ -448,6 +453,10 @@ SlideLabelPresets()
 		varCode := "L1L2"
 	else if (shortPrefix="BS")
 		varCode := "L1L2L3"
+	else if (shortPrefix="UC" or shortPrefix="TUC")
+		varCode := "Pap"
+	else if (shortPrefix="UV" or shortPrefix="TUV")
+		varCode := "Fish"
 	else
 		varCode := "P6"
 	
@@ -525,8 +534,7 @@ SendStandardSlides()
 			thisLabel := label%A_Index%
 			thisJarNumber := labelJarNumber%A_Index%
 			
-			;Msgbox, %thisLabel%,%thisJarNumber%
-			
+
 			if (%thisJarNumber%P6)
 				thisData := codeP6(thisLabel)
 			else if (%thisJarNumber%L1to3)
@@ -535,6 +543,10 @@ SendStandardSlides()
 				thisData := codeL1L2(thisLabel)
 			else if (%thisJarNumber%L1L2L3)
 				thisData := codeL1L2L3(thisLabel)
+			else if (%thisJarNumber%Pap)
+				thisData := codePap(thisLabel)
+			else if (%thisJarNumber%Fish)
+				thisData := codeFish(thisLabel)
 			
 			if (A_Index=labelCount)
 				printdata=%printdata%%thisData%
@@ -598,6 +610,18 @@ codeL1L2(label)
 codeL1L2L3(label)
 {
 	x=["%label%", "L1", "H&E"],["%label%", "L2", "H&E"],["%label%", "L3", "H&E"]
+	return x
+}
+
+codePap(label)
+{
+	x=["%label%", "", "PAP"]
+	return x
+}
+
+codeFish(label)
+{
+	x=["%label%", "", "FISH"]
 	return x
 }
 
@@ -758,7 +782,7 @@ return
 PrintLabel(labelData)
 {
 	global
-	Msgbox, %data%  ;This is used to check the data before sending
+	;Msgbox, %data%  ;This is used to check the data before sending
 	x := URLPost(slideQueue, labelData)
 	key:=JsonToObject(x)
 	key := key.name
@@ -808,19 +832,29 @@ PrintPDFinLocalWindow(key)
 
 SC137::
 {
+x :=  ie.document.url
+y=PatientInformation.aspx?AccessionID
 
-ie.document.getElementByID("ctl00_DefaultContent_btnLaunch2").click()
-IELoad(ie)
-WinActivate, Travel Document
-MouseClick, Right, 400, 400
-Sleep, 100
-MouseClick, Left, 440, 513
-WinWait, Print
-Sleep, 500
-Send {Enter}
-Sleep, 2000
-ie.navigate("https://path.averodx.com/orders/InboundWorklist.aspx")
-IELoad(ie)
+IfInString, x, AccessionID
+{
+	
+	IfInString, x,%y%
+		ie.document.getElementByID("ctl00_DefaultContent_btnSave").click()  ;The button with this id is actually the "Launch" button
+	else
+		ie.document.getElementByID("ctl00_DefaultContent_btnLaunch2").click()
+	
+	IELoad(ie)
+	WinActivate, Travel Document
+	MouseClick, Right, 400, 400
+	Sleep, 100
+	MouseClick, Left, 440, 513
+	WinWait, Print
+	Sleep, 500
+	Send {Enter}
+	Sleep, 2000
+	ie.navigate("https://path.averodx.com/orders/InboundWorklist.aspx")
+	IELoad(ie)
+}
 return
 	
 }

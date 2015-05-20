@@ -185,7 +185,10 @@ UrovysionScanCases:  ;Urovysion Read Loop
 			break
 		else
 		{
-			Match := RegExMatch(CaseNum, "UV\d\d-\d\d\d\d\d\d")
+			Match1 := RegExMatch(CaseNum, "UV\d\d-\d\d\d\d\d\d")
+			Match2 := RegExMatch(CaseNum, "US\d\d-\d\d\d\d\d\d")
+			Match3 := RegExMatch(CaseNum, "PV\d\d-\d\d\d\d\d\d")
+			Match := Match1 + Match2 + Match3
 			
 			if Match		
 			{
@@ -198,7 +201,7 @@ UrovysionScanCases:  ;Urovysion Read Loop
 			else
 			{
 				SoundBeep
-				Msgbox, %CaseNum% is not a valid Urovysion casenumber.
+				Msgbox, %CaseNum% is not a valid UV,US or PV casenumber.
 			}
 		}
 	}
@@ -219,6 +222,17 @@ UrovysionSignout:
 			FileList = %FileList%%A_LoopFileTimeModified%`t%A_LoopFileName%`n
 			FileCount := FileCount + 1
 		}
+	Loop, %FilePath%\US*.pdf , 1
+		{
+			FileList = %FileList%%A_LoopFileTimeModified%`t%A_LoopFileName%`n
+			FileCount := FileCount + 1
+		}
+	Loop, %FilePath%\PV*.pdf , 1
+		{
+			FileList = %FileList%%A_LoopFileTimeModified%`t%A_LoopFileName%`n
+			FileCount := FileCount + 1
+		}
+	
 	
 	if (FileCount=0)
 	{
@@ -436,7 +450,13 @@ F12::   ;Etel Reassign and Launch functions
 		Break
 	else
 		{
-		ControlClick,  Button32, cellSens  ;Click the live button to turn on
+		Loop,
+		{
+			ControlClick,  Button32, cellSens  ;Click the live button to turn on
+			WinWait, cellSens Standard, Live (active)
+			break
+		}
+		
 		Msgbox, 4,  Close when picture is ready to take.
 		IfMsgBox Yes
 			Sleep, 5
@@ -478,29 +498,42 @@ F12::   ;Etel Reassign and Launch functions
 
 ^!p::
 {
-	p := userSettings.etelUsername
 	
-	Loop,
-	{
-		InputBox, CaseNum, Scan the case...,  Scan the case...	
-		if ErrorLevel
-			break
-		else
+		Loop, read, c:\svsignout.txt
 		{
-			data={"action":"reassign", "caseNumber":"%CaseNum%", "doctor":"%p%" }
-			j := URLPost(urlQueue, data)
-
-/* 			data={"action":"readCase", "caseNumber":"%CaseNum%" }
- * 			url:=urlQueue
- * 			j := URLPost(urlQueue, data)
- */
+			if ErrorLevel
+				break
+			else
+			{
+				u := RegExReplace(A_LoopReadLine, "(.*[^\s]).*$","$1")
+				Send, %u%{Enter}
+				Pause
+				;data={"action":"readCase", "caseNumber":"%u%" }
+				;j := URLPost(urlQueue, data)
+			}
 		}
-	}
-	
 	return
 
 }
 
+^!d::
+{
+	urlQueue = https://dazzling-torch-3393.firebaseio.com/CaseData.json?limitToFirst=1&orderBy="$key"
+
+j := URLDownloadToVar(urlQueue)
+
+if (j="{}")
+	Return
+
+t := JsonToObject(j)
+
+For k,v in t
+	key:=k	
+
+urlToDelete=https://dazzling-torch-3393.firebaseio.com/CaseData/%key%.json
+URLDelete(urlToDelete)
+return
+}
 
 ^!z::
 {
@@ -570,4 +603,20 @@ ScrollLock::Suspend
 ^!v::ListVars   ;List the variables currently in memory.
 ^!l::ListLines  ;List the most recently executed lines of code.
 Pause::Pause
-^!r::Reload
+^!q::Reload
+^!r::
+{
+	PossibleDrives=ZYXWVUTSRQPONMLKJIHGFE
+
+version:=URLDownloadToVar("https://dazzling-torch-3393.firebaseio.com/AveroQueue/Settings/version.json")
+StringReplace, version, version, ",,All
+
+Loop, Parse, PossibleDrives
+	IfExist, %A_LoopField%:\LNT\bin\LNT-%version%.ahk
+	{
+		Run, %A_LoopField%:\LNT\lib\Autohotkey\Autohotkey.exe %A_LoopField%:\LNT\bin\LNT-%version%.ahk
+		break
+	}
+return
+}
+

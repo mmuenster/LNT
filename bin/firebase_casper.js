@@ -34,7 +34,7 @@ casper.start('https://path.averodx.com/', function onStart() {
 	}, function onTimeout() {
 		casper.echo("Login Failed");
 		casper.exit();
-	}, 10000);
+	}, 25000);
 }).run();
 
 setInterval(function() { listenToFirebase(); }, 10000);
@@ -328,7 +328,7 @@ function signoutCase(marker, fbQueueItem){
 			fbQueueItem.ref().remove();
 		}, function onTimeout() {
 			this.echo("Timed Out!");
-		}, 18000);
+		}, 28000);
 		});
 }
 

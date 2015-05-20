@@ -1,7 +1,7 @@
 PossibleDrives=ZYXWVUTSRQPONMLKJIHGFE
 
 version:=URLDownloadToVar("https://dazzling-torch-3393.firebaseio.com/AveroQueue/Settings/version.json")
-msgbox, %version%
+
 StringReplace, version, version, ",,All
 
 Loop, Parse, PossibleDrives
